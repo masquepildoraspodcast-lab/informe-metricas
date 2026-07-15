@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>+Que Píldoras · Informe de Métricas · Julio 2026</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: #f4f2ed; min-height: 100vh; color: #1a1a2e; }
+  #root { min-height: 100vh; }
+  .loading { max-width:760px; margin:0 auto; padding:80px 24px; text-align:center; color:#6b7280; }
+</style>
+</head>
+<body>
+<div id="root"><div class="loading">Cargando informe…</div></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+const C = {
+  navy: "#0d1f4e", blue: "#1a3a6b", accent: "#7ec8e3", gold: "#d4a017",
+  green: "#0e6e55", bg: "#f4f2ed", white: "#ffffff", text: "#1a1a2e",
+  muted: "#6b7280", border: "#e2ddd5",
+};
+
+function Stat({ value, label, sub, up, down, big }) {
+  return (
+    <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: big ? "20px 22px" : "16px 18px", display: "flex", flexDirection: "column", gap: "4px" }}>
+      <p style={{ fontSize: big ? "32px" : "26px", fontWeight: "800", color: C.navy, margin: 0, lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: "12px", color: C.muted, margin: 0 }}>{label}</p>
+      {(up || down) && (<p style={{ fontSize: "12px", color: up ? C.green : "#c0392b", margin: 0, fontWeight: "600" }}>{up ? "▲" : "▼"} {up || down}</p>)}
+      {sub && <p style={{ fontSize: "11px", color: C.muted, margin: 0, fontStyle: "italic" }}>{sub}</p>}
+    </div>
+  );
+}
+function PlatformHeader({ icon, name, color, bg }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "14px 0 10px", borderBottom: `2px solid ${color}`, marginBottom: "16px" }}>
+      <span style={{ background: bg, color, width: "32px", height: "32px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: "800", flexShrink: 0 }}>{icon}</span>
+      <span style={{ fontWeight: "800", fontSize: "16px", color: C.navy, letterSpacing: "-0.3px" }}>{name}</span>
+    </div>
+  );
+}
+function BarRow({ label, pct, value, color }) {
+  return (
+    <div style={{ marginBottom: "8px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+        <span style={{ fontSize: "13px", color: C.text }}>{label}</span>
+        <span style={{ fontSize: "13px", fontWeight: "600", color: C.navy }}>{value || `${pct}%`}</span>
+      </div>
+      <div style={{ background: "#f0ece4", borderRadius: "4px", height: "6px" }}>
+        <div style={{ width: `${pct}%`, background: color, height: "6px", borderRadius: "4px" }} />
+      </div>
+    </div>
+  );
+}
+function Tag({ children, color = C.navy, bg }) {
+  return (<span style={{ background: bg || `${color}18`, color, fontSize: "11px", fontWeight: "700", padding: "3px 10px", borderRadius: "20px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{children}</span>);
+}
+function Insight({ icon, text, type = "positive" }) {
+  const colors = { positive: { bg: "#e6f4f0", border: "#0e6e55", icon: "#0e6e55" }, warning: { bg: "#fff8e6", border: "#d4a017", icon: "#d4a017" }, info: { bg: "#e8eef8", border: "#1a3a6b", icon: "#1a3a6b" } };
+  const col = colors[type];
+  return (
+    <div style={{ background: col.bg, border: `1px solid ${col.border}40`, borderLeft: `3px solid ${col.border}`, borderRadius: "8px", padding: "10px 14px", display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "8px" }}>
+      <span style={{ fontSize: "16px", flexShrink: 0, color: col.icon }}>{icon}</span>
+      <p style={{ margin: 0, fontSize: "13px", color: C.text, lineHeight: 1.5 }}>{text}</p>
+    </div>
+  );
+}
+function DataBadge({ children }) {
+  return (<span style={{ background: "#e6f4f0", color: "#0e6e55", fontSize: "10px", fontWeight: "700", padding: "2px 7px", borderRadius: "10px", letterSpacing: "0.4px", marginLeft: "6px" }}>● {children}</span>);
+}
+function Card({ title, sub, children }) {
+  return (
+    <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: "18px", marginBottom: "16px" }}>
+      {title && <p style={{ fontWeight: "700", fontSize: "14px", color: C.navy, margin: sub ? "0 0 2px" : "0 0 14px" }}>{title}</p>}
+      {sub && <p style={{ fontSize: "12px", color: C.muted, margin: "0 0 14px", fontStyle: "italic" }}>{sub}</p>}
+      {children}
+    </div>
+  );
+}
+
+const sections = ["Resumen", "Web", "YouTube", "Spotify", "LinkedIn", "Instagram", "TikTok", "Audiencia", "Contexto"];
+
+function Informe() {
+  const [active, setActive] = useState("Resumen");
+
+  const renderSection = () => {
+    switch (active) {
+
+      case "Resumen": return (
+        <div>
+          <div style={{ background: `linear-gradient(135deg, ${C.navy}, ${C.blue})`, borderRadius: "16px", padding: "28px 24px", marginBottom: "24px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px", flexWrap: "wrap", gap: "8px" }}>
+              <div>
+                <p style={{ color: C.accent, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 4px" }}>+QuePíldoras</p>
+                <h2 style={{ color: "white", margin: 0, fontSize: "22px", fontWeight: "800" }}>Informe de métricas actualizado</h2>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", margin: "4px 0 0" }}>Datos reales · Julio 2026 · 6 episodios publicados</p>
+              </div>
+              <Tag color={C.accent} bg="rgba(126,200,227,0.2)">100% orgánico · 0€ inversión</Tag>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
+              {[
+                { v: "17,1 mil", l: "Views YouTube", s: "28 días · +77%" },
+                { v: "653", l: "Escuchas Spotify", s: "acumulado · 84 seg." },
+                { v: "457", l: "Seguidores LinkedIn", s: "+148 vs junio" },
+                { v: "12,8K", l: "Views TikTok", s: "+52% · 28 días" },
+                { v: "98", l: "Seguidores Instagram", s: "4.120 alcanzadas/30d" },
+                { v: "19", l: "Clics a partners (web)", s: "GA4 · 28 días" },
+              ].map(k => (
+                <div key={k.l} style={{ background: "rgba(126,200,227,0.15)", borderRadius: "10px", padding: "12px 14px", border: "1px solid rgba(126,200,227,0.4)" }}>
+                  <p style={{ fontSize: "24px", fontWeight: "800", color: "white", margin: 0, lineHeight: 1 }}>{k.v}</p>
+                  <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.65)", margin: "4px 0 2px" }}>{k.l}</p>
+                  <p style={{ fontSize: "11px", color: C.accent, margin: 0 }}>{k.s}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Card title="EPISODIOS PUBLICADOS · TEMPORADA 1">
+            {[
+              { num: "EP01", title: "Lanzamiento — ¿Qué hay detrás de la industria farmacéutica?", date: "6 may 2026", g: "Jaime & Miren" },
+              { num: "EP02", title: "¿Quieres ser MSL? Las habilidades que necesitas", date: "20 may 2026", g: "Pablo del Pino" },
+              { num: "EP03", title: "De salvar vidas en minutos a Medical Affairs", date: "3 jun 2026", g: "Fernando Zaragozá" },
+              { num: "EP04", title: "¿Quién decide realmente en pharma?", date: "17 jun 2026", g: "Laura Barreiro" },
+              { num: "EP05", title: "20 años en Medical Affairs", date: "1 jul 2026", g: "Cristina González" },
+              { num: "EP06", title: "Expansión internacional: llevar tratamientos a donde no existen", date: "13 jul 2026", g: "Germán Domecq", isNew: true },
+            ].map(ep => (
+              <div key={ep.num} style={{ borderRadius: "10px", padding: "12px 14px", marginBottom: "8px", background: ep.isNew ? "#e6f4f0" : C.white, border: `1px solid ${ep.isNew ? "#0e6e55" : C.accent}40` }}>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "4px", flexWrap: "wrap" }}>
+                  <Tag color={ep.isNew ? "#0e6e55" : C.navy}>{ep.num}</Tag>
+                  {ep.isNew && <Tag color="#0e6e55">🆕 Último</Tag>}
+                  <span style={{ fontSize: "12px", color: C.muted }}>{ep.date} · {ep.g}</span>
+                </div>
+                <p style={{ margin: 0, fontWeight: "600", fontSize: "14px", color: C.text }}>{ep.title}</p>
+              </div>
+            ))}
+          </Card>
+
+          <div>
+            <p style={{ fontSize: "13px", fontWeight: "700", color: C.navy, margin: "0 0 12px" }}>INSIGHTS CLAVE</p>
+            <Insight icon="🚀" text="Crecimiento en TODAS las plataformas vs junio: YouTube 9.665 → 17.100 views (+77%), TikTok 6,6K → 12,8K (+94%), LinkedIn 309 → 457 seguidores (+48%), Instagram 81 → 98 seguidores." />
+            <Insight icon="🎯" text="19 clics a partners (partner_click) en la web en 28 días — todos desde España, justo el público relevante para Be Pharma y Klorofila. El tracking de leads ya está funcionando." type="info" />
+            <Insight icon="🎬" text="Los episodios con invitados de perfil alto (Germán, Cristina) lideran las visualizaciones recientes en YouTube y son el mejor contenido de Instagram/TikTok." type="info" />
+            <Insight icon="📉" text="Spotify baja en los últimos 30 días (200 escuchas, -43,8%) — normal entre lanzamientos; el impulso está ahora en vídeo (YouTube/TikTok/IG Reels)." type="warning" />
+          </div>
+        </div>
+      );
+
+      case "Web": return (
+        <div>
+          <PlatformHeader icon="🌐" name="Web · masquepildoraspodcast.com" color="#2d6fd4" bg="#eef5ff" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+            <DataBadge>GA4 · 28 días · 17 jun–14 jul 2026</DataBadge>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="19" label="Clics a partners (partner_click)" up="Objetivo principal de la web" big />
+            <Stat value="57" label="Usuarios activos (28 días)" up="+125% vs periodo anterior" />
+            <Stat value="111" label="Sesiones" sub="1 min 11 s de interacción media" />
+            <Stat value="165" label="Vistas de página" sub="Home 144 · fichas de episodio" />
+          </div>
+
+          <Card title="Clics salientes a partners · el KPI de leads">
+            <div style={{ background: "#eef5ff", borderRadius: "10px", padding: "14px" }}>
+              <BarRow label="Total clics a partners (partner_click)" pct={100} value="19 clics" color="#2d6fd4" />
+              <BarRow label="Otros clics salientes (redes, plataformas…)" pct={58} value="≈ 30 clics" color="#93c5fd" />
+              <p style={{ fontSize: "12px", color: C.muted, fontStyle: "italic", margin: "8px 0 0" }}>Los 19 clics a partners provienen 100% de España — el público que interesa a Be Pharma y Klorofila. Medición vía evento GA4 + UTMs por partner.</p>
+            </div>
+          </Card>
+
+          <Card title="Páginas más vistas (28 días)">
+            <BarRow label="Home (portada del podcast)" pct={100} value="144 vistas" color={C.navy} />
+            <BarRow label="Ep.05 · 20 años en Medical Affairs" pct={5} value="7 vistas" color={C.navy} />
+            <BarRow label="Ep.06 · Expansión internacional" pct={8} value="11 vistas" color={C.navy} />
+            <p style={{ fontSize: "12px", color: C.muted, fontStyle: "italic", margin: "8px 0 0" }}>Las fichas SEO por episodio (nuevas) ya empiezan a recibir tráfico. Aún jóvenes para posicionar en Google.</p>
+          </Card>
+
+          <Card title="Geografía · usuarios (28 días)">
+            <BarRow label="España" pct={100} value="24" color={C.navy} />
+            <BarRow label="Estados Unidos" pct={79} value="19" color={C.navy} />
+            <BarRow label="Alemania" pct={29} value="7" color={C.navy} />
+            <BarRow label="Reino Unido" pct={8} value="2" color={C.navy} />
+            <p style={{ fontSize: "12px", color: C.muted, fontStyle: "italic", margin: "8px 0 0" }}>Ciudades top: Madrid (11) y Barcelona (9). Idioma: inglés, español y catalán.</p>
+          </Card>
+
+          <Insight icon="🎯" text="La web ya cumple su objetivo: 19 clics medidos a los partners en 28 días, todos desde España. Con la analítica y los UTMs montados, cada clic a Be Pharma/Klorofila queda registrado." />
+          <Insight icon="🔎" text="El tráfico aún es pequeño (57 usuarios/28d) y muy nuevo. Las páginas por episodio y el sitemap enviado a Search Console son la palanca para crecer el tráfico orgánico en los próximos meses." type="info" />
+        </div>
+      );
+
+      case "YouTube": return (
+        <div>
+          <PlatformHeader icon="▶" name="YouTube" color="#FF0000" bg="#fff0f0" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}><DataBadge>DATOS REALES · últimos 28 días</DataBadge></div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="17,1 mil" label="Visualizaciones (28 días)" up="+77% vs junio (9.665)" big />
+            <Stat value="70,2 h" label="Tiempo de visualización (28 días)" up="Crecimiento sostenido" />
+            <Stat value="70" label="Suscriptores" up="+30 en 28 días" />
+            <Stat value="6" label="Episodios en el canal" sub="+ Shorts activos" />
+          </div>
+          <Card title="Contenido reciente que lidera">
+            <div style={{ background: "#fff0f0", borderRadius: "10px", padding: "14px" }}>
+              <BarRow label="Ep.06 · ¿Cómo llegan los medicamentos? (Germán)" pct={100} value="Nº1 reciente" color="#FF0000" />
+              <BarRow label="Ep.05 · 20 años en Medical Affairs (Cristina)" pct={85} value="Nº2 reciente" color="#FF0000" />
+              <BarRow label="Ep.02 · ¿Quieres ser MSL? (Pablo)" pct={40} value="constante" color="#FF0000" />
+            </div>
+          </Card>
+          <Insight icon="🏆" text="17.100 visualizaciones en 28 días — casi el doble que en junio (9.665). YouTube es el motor de alcance del proyecto y el único canal de vídeo entre los podcasts de farma en español." />
+          <Insight icon="📈" text="70 suscriptores (+30 en 28 días): el canal duplica su base cada mes. Los episodios con invitados senior (Germán, Cristina) tiran del crecimiento." type="info" />
+        </div>
+      );
+
+      case "Spotify": return (
+        <div>
+          <PlatformHeader icon="🎵" name="Spotify for Creators" color="#1DB954" bg="#f0fdf4" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}><DataBadge>DATOS REALES · jul 2026</DataBadge></div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="653" label="Escuchas y descargas (acumulado)" up="Total histórico" big />
+            <Stat value="84" label="Seguidores en Spotify" up="Crecimiento orgánico" />
+            <Stat value="200" label="Escuchas (últimos 30 días)" down="-43,8% vs periodo anterior" />
+            <Stat value="35h 27min" label="Tiempo de consumo (30 días)" down="-30%" />
+          </div>
+          <Card title="Último episodio">
+            <div style={{ background: "#f0fdf4", borderRadius: "8px", padding: "12px 14px" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "4px" }}>
+                <Tag color="#1DB954">EP06</Tag><span style={{ fontSize: "12px", color: C.muted }}>Publicado 15 jul 2026</span>
+              </div>
+              <p style={{ margin: 0, fontSize: "13px", fontWeight: "600", color: C.text }}>¿Cómo llegan los medicamentos a distintos países? — Germán Domecq</p>
+            </div>
+          </Card>
+          <Insight icon="📊" text="653 escuchas y descargas acumuladas y 84 seguidores. El audio puro (Spotify) crece más despacio que el vídeo — es esperable en un podcast joven cuyo fuerte visual está en YouTube y TikTok." />
+          <Insight icon="📉" text="Los últimos 30 días bajan (-43,8%) respecto al periodo con más lanzamientos. El estreno del Ep.06 (15 jul) debería reactivar la curva." type="warning" />
+        </div>
+      );
+
+      case "LinkedIn": return (
+        <div>
+          <PlatformHeader icon="in" name="LinkedIn" color="#0a66c2" bg="#e7f0fb" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}><DataBadge>DATOS REALES · jul 2026</DataBadge></div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="457" label="Seguidores totales" up="+148 vs junio (309)" big />
+            <Stat value="17.084" label="Impresiones (30 días)" up="+8,5%" />
+            <Stat value="316" label="Reacciones (30 días)" up="+66,3%" />
+            <Stat value="+23" label="Nuevos seguidores (7 días)" sub="18 apariciones en búsquedas" />
+          </div>
+          <Card title="Últimos 7 días">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+              {[
+                { v: "2.664", l: "Impresiones" },
+                { v: "10", l: "Visitantes de página" },
+                { v: "18", l: "Apariciones en búsquedas" },
+                { v: "12", l: "Comentarios (30 d)" },
+                { v: "4", l: "Compartidos (30 d)" },
+                { v: "+23", l: "Nuevos seguidores" },
+              ].map(s => (
+                <div key={s.l} style={{ background: "#e7f0fb", borderRadius: "8px", padding: "10px", textAlign: "center" }}>
+                  <p style={{ fontSize: "20px", fontWeight: "800", color: "#0a66c2", margin: 0 }}>{s.v}</p>
+                  <p style={{ fontSize: "11px", color: C.muted, margin: "2px 0 0" }}>{s.l}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+          <Insight icon="🏆" text="457 seguidores (+148 en un mes, +48%) y 17.084 impresiones en 30 días con +66% de reacciones. LinkedIn es la plataforma con la comunidad profesional más fuerte y en mayor crecimiento." />
+          <Insight icon="🔍" text="18 apariciones en búsquedas: el perfil del podcast gana relevancia entre profesionales de farma — el público exacto que interesa a los partners." type="info" />
+        </div>
+      );
+
+      case "Instagram": return (
+        <div>
+          <PlatformHeader icon="📷" name="Instagram" color="#E1306C" bg="#fdf0f5" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}><DataBadge>DATOS REALES · últimos 30 días</DataBadge></div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="98" label="Seguidores" up="+17 vs junio (81)" big />
+            <Stat value="4.120" label="Cuentas alcanzadas (30 días)" up="67,4% no seguidores" />
+            <Stat value="9.202" label="Visualizaciones (30 días)" sub="Reels + Historias + Publicaciones" />
+            <Stat value="307" label="Interacciones (30 días)" sub="37 cuentas · 91,2% seguidores" />
+          </div>
+          <Card title="Visualizaciones por formato">
+            <BarRow label="Reels" pct={100} value="79,6%" color="#E1306C" />
+            <BarRow label="Historias" pct={24} value="19,1%" color="#E1306C" />
+            <BarRow label="Publicaciones" pct={2} value="1,2%" color="#E1306C" />
+          </Card>
+          <Card title="Interacciones por formato">
+            <BarRow label="Reels" pct={100} value="55,4%" color="#E1306C" />
+            <BarRow label="Historias" pct={52} value="29,0%" color="#E1306C" />
+            <BarRow label="Publicaciones" pct={28} value="15,6%" color="#E1306C" />
+          </Card>
+          <Insight icon="🔥" text="67,4% de las cuentas alcanzadas son NO seguidores: con solo 98 seguidores, el contenido llega a 4.120 cuentas — alcance orgánico excepcional (más del doble que en junio: 1.770)." />
+          <Insight icon="🎬" text="Los Reels dominan claramente (79,6% de las visualizaciones y 55,4% de las interacciones). El vídeo corto es el formato ganador también en Instagram." type="info" />
+        </div>
+      );
+
+      case "TikTok": return (
+        <div>
+          <PlatformHeader icon="⚫" name="TikTok" color="#010101" bg="#f5f5f5" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}><DataBadge>DATOS REALES · últimos 28 días</DataBadge></div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+            <Stat value="12,8K" label="Visualizaciones de vídeos (28 días)" up="+52,1% · +4,4K" big />
+            <Stat value="697" label="Me gusta (28 días)" up="+189,2% · +456" />
+            <Stat value="45" label="Seguidores totales" up="+39 vs junio (6)" />
+            <Stat value="62" label="Visualizaciones de perfil (28 días)" up="+24%" />
+          </div>
+          <Card title="Fuente de tráfico">
+            <BarRow label="Para ti (algoritmo)" pct={100} value="98,8%" color="#010101" />
+            <BarRow label="Búsqueda" pct={1} value="0,7%" color="#010101" />
+            <p style={{ fontSize: "12px", color: C.muted, fontStyle: "italic", margin: "8px 0 0" }}>Búsquedas destacadas: «msl o MBA industria farmacéutica», «farmacovigilancia» — intención muy cualificada.</p>
+          </Card>
+          <Insight icon="🤯" text="12,8K visualizaciones (+52%) y 697 me gusta (+189%) con solo 45 seguidores. El algoritmo de TikTok sigue distribuyendo el contenido masivamente sin necesidad de base de seguidores." />
+          <Insight icon="⚡" text="El 98,8% del tráfico viene de 'Para ti': TikTok es la plataforma con mayor potencial de crecimiento viral del proyecto." type="info" />
+        </div>
+      );
+
+      case "Audiencia": return (
+        <div>
+          <div style={{ background: `linear-gradient(135deg, ${C.navy}, ${C.blue})`, borderRadius: "14px", padding: "20px 22px", marginBottom: "20px" }}>
+            <p style={{ color: C.accent, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px" }}>Quién nos escucha</p>
+            <h3 style={{ color: "white", margin: 0, fontSize: "18px", fontWeight: "700" }}>Perfil de la audiencia</h3>
+            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "13px", margin: "4px 0 0" }}>Geografía web (GA4, jul) · demografía de plataformas (referencia)</p>
+          </div>
+          <Card title="GEOGRAFÍA — Web (GA4, 28 días)">
+            <BarRow label="España" pct={100} value="24 usuarios" color={C.navy} />
+            <BarRow label="Estados Unidos" pct={79} value="19" color={C.navy} />
+            <BarRow label="Alemania" pct={29} value="7" color={C.navy} />
+            <BarRow label="Reino Unido" pct={8} value="2" color={C.navy} />
+          </Card>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+            <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: "18px" }}>
+              <p style={{ fontWeight: "700", fontSize: "13px", color: C.navy, margin: "0 0 12px" }}>EDAD — Spotify (ref.)</p>
+              <BarRow label="35–44 años (dominante)" pct={100} value="40,0%" color="#1DB954" />
+              <BarRow label="28–34 años" pct={71} value="28,6%" color="#1DB954" />
+              <BarRow label="45–59 años" pct={33} value="13,3%" color="#1DB954" />
+              <BarRow label="23–27 años" pct={33} value="13,3%" color="#1DB954" />
+            </div>
+            <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: "18px" }}>
+              <p style={{ fontWeight: "700", fontSize: "13px", color: C.navy, margin: "0 0 12px" }}>EDAD — TikTok/IG (ref.)</p>
+              <BarRow label="25–34 años (dominante)" pct={100} value="44,6%" color="#010101" />
+              <BarRow label="18–24 años" pct={85} value="37,7%" color="#010101" />
+              <BarRow label="35–44 años" pct={18} value="8,0%" color="#010101" />
+              <BarRow label="45–54 años" pct={14} value="6,4%" color="#010101" />
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+            <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: "18px" }}>
+              <p style={{ fontWeight: "700", fontSize: "13px", color: C.navy, margin: "0 0 12px" }}>GÉNERO — Spotify (ref.)</p>
+              <BarRow label="Mujeres" pct={100} value="62,9%" color="#BC3CB4" />
+              <BarRow label="Hombres" pct={52} value="32,4%" color="#4A90D9" />
+            </div>
+            <div style={{ background: C.white, borderRadius: "12px", border: `1px solid ${C.border}`, padding: "18px" }}>
+              <p style={{ fontWeight: "700", fontSize: "13px", color: C.navy, margin: "0 0 12px" }}>GÉNERO — YouTube (ref.)</p>
+              <BarRow label="Hombres" pct={100} value="81,4%" color="#4A90D9" />
+              <BarRow label="Mujeres" pct={23} value="18,6%" color="#BC3CB4" />
+            </div>
+          </div>
+          <Insight icon="🎯" text="Audiencia dual: Spotify/LinkedIn atrae perfil 35-44 con experiencia (mentoring senior); TikTok/IG atrae 18-34 que quiere entrar al sector (mentoring junior). Dos públicos de valor para los partners." />
+          <Insight icon="👩‍🔬" text="62,9% de oyentes en Spotify son mujeres — dato relevante para propuestas hacia empresas con iniciativas de diversidad en farma." type="info" />
+        </div>
+      );
+
+      case "Contexto": return (
+        <div>
+          <div style={{ background: `linear-gradient(135deg, #3d0070, #5c1f8e)`, borderRadius: "14px", padding: "20px 22px", marginBottom: "20px" }}>
+            <p style={{ color: "#d4a0ff", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 6px" }}>Contexto y evolución</p>
+            <h3 style={{ color: "white", margin: 0, fontSize: "18px", fontWeight: "700" }}>Evolución junio → julio 2026</h3>
+            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "13px", margin: "4px 0 0" }}>Crecimiento mes a mes · 100% orgánico</p>
+          </div>
+          {[
+            { m: "YouTube · visualizaciones (28d)", jun: "9.665", jul: "17.100", d: "+77%", pos: true },
+            { m: "TikTok · visualizaciones (28d)", jun: "6.600", jul: "12.800", d: "+94%", pos: true },
+            { m: "LinkedIn · seguidores", jun: "309", jul: "457", d: "+48%", pos: true },
+            { m: "Instagram · seguidores", jun: "81", jul: "98", d: "+21%", pos: true },
+            { m: "Instagram · cuentas alcanzadas (30d)", jun: "1.770", jul: "4.120", d: "+133%", pos: true },
+            { m: "TikTok · seguidores", jun: "6", jul: "45", d: "+650%", pos: true },
+            { m: "Spotify · escuchas (30d)", jun: "233", jul: "200", d: "-14%", pos: false },
+          ].map(r => (
+            <div key={r.m} style={{ background: C.white, borderRadius: "10px", border: `1px solid ${C.border}`, padding: "14px 16px", marginBottom: "10px", borderLeft: `4px solid ${r.pos ? C.green : C.gold}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                <div>
+                  <p style={{ fontWeight: "700", fontSize: "14px", color: C.navy, margin: "0 0 4px" }}>{r.m}</p>
+                  <span style={{ fontSize: "12px", color: C.muted }}>Junio: <strong>{r.jun}</strong> → Julio: <strong>{r.jul}</strong></span>
+                </div>
+                <p style={{ fontSize: "22px", fontWeight: "800", color: r.pos ? C.green : C.gold, margin: 0 }}>{r.d}</p>
+              </div>
+            </div>
+          ))}
+          <div style={{ background: "#fffbea", border: "1px solid #f6d860", borderRadius: "12px", padding: "16px 20px", marginTop: "8px" }}>
+            <p style={{ fontWeight: "700", color: "#92600a", margin: "0 0 8px", fontSize: "14px" }}>📌 Nota metodológica</p>
+            <p style={{ color: "#7a5010", fontSize: "13px", margin: 0, lineHeight: 1.6 }}>
+              Datos obtenidos directamente de las plataformas los días 14–15 de julio de 2026: YouTube Studio (28 días), Spotify for Creators (30 días), LinkedIn Admin Analytics (30 días), TikTok Studio (28 días), Instagram Panel Profesional (30 días) y Google Analytics 4 (28 días, web). La demografía por edad/género de la pestaña Audiencia es de referencia (mayo–junio); la geografía web es de GA4 (julio).
+            </p>
+          </div>
+        </div>
+      );
+
+      default: return null;
+    }
+  };
+
+  return (
+    <div style={{ fontFamily: "'Georgia', serif", background: C.bg, minHeight: "100vh" }}>
+      <div style={{ background: `linear-gradient(135deg, ${C.navy}, ${C.blue})`, padding: "24px 24px 0", position: "sticky", top: 0, zIndex: 10 }}>
+        <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <div>
+              <p style={{ color: C.accent, fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", margin: "0 0 2px" }}>+QuePíldoras</p>
+              <p style={{ color: "white", fontWeight: "800", fontSize: "15px", margin: 0 }}>Informe de Métricas · Julio 2026</p>
+            </div>
+            <span style={{ background: "rgba(255,255,255,0.12)", color: "white", fontSize: "11px", padding: "4px 12px", borderRadius: "20px" }}>6 episodios · datos reales</span>
+          </div>
+          <div style={{ display: "flex", gap: "2px", overflowX: "auto" }}>
+            {sections.map(s => (
+              <button key={s} onClick={() => setActive(s)} style={{ padding: "10px 14px", background: "none", border: "none", color: active === s ? "white" : "rgba(255,255,255,0.5)", fontSize: "13px", fontFamily: "inherit", cursor: "pointer", borderBottom: `2px solid ${active === s ? C.accent : "transparent"}`, whiteSpace: "nowrap", fontWeight: active === s ? "700" : "400" }}>{s}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{ maxWidth: "760px", margin: "0 auto", padding: "24px 16px 60px" }}>{renderSection()}</div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Informe />);
+</script>
+</body>
+</html>
