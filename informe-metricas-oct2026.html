@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>+Que Píldoras · Informe de Métricas · Octubre 2026</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: #f4f2ed; min-height: 100vh; color: #1a1a2e; }
+  .header { background: linear-gradient(135deg, #0d1f4e, #1a3a6b); padding: 20px 24px 0; position: sticky; top: 0; z-index: 10; }
+  .header-top { max-width: 760px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .header-label { color: #7ec8e3; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+  .header-title { color: white; font-weight: 800; font-size: 15px; }
+  .header-badge { background: rgba(255,255,255,0.12); color: white; font-size: 11px; padding: 4px 12px; border-radius: 20px; }
+  .nav { max-width: 760px; margin: 0 auto; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { padding: 10px 14px; background: none; border: none; color: rgba(255,255,255,0.5); font-size: 13px; font-family: Georgia, serif; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 400; transition: all 0.15s; }
+  .nav-btn.active { color: white; border-bottom-color: #7ec8e3; font-weight: 700; }
+  .content { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card { background: white; border-radius: 12px; border: 1px solid #e2ddd5; padding: 18px; margin-bottom: 16px; }
+  .card-title { font-weight: 700; font-size: 14px; color: #0d1f4e; margin-bottom: 14px; }
+  .card-sub { font-size: 12px; color: #6b7280; margin-bottom: 4px; font-style: italic; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #0d1f4e, #1a3a6b); border-radius: 16px; padding: 28px 24px; margin-bottom: 24px; }
+  .hero-label { color: #7ec8e3; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .hero-title { color: white; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .hero-sub { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 20px; }
+  .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+  .kpi-card { background: rgba(126,200,227,0.15); border-radius: 10px; padding: 12px 14px; border: 1px solid rgba(126,200,227,0.4); }
+  .kpi-value { font-size: 24px; font-weight: 800; color: white; line-height: 1; }
+  .kpi-label { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+  .kpi-sub { font-size: 11px; color: #7ec8e3; margin-top: 2px; }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .stat { background: white; border-radius: 12px; border: 1px solid #e2ddd5; padding: 16px 18px; }
+  .stat.big { padding: 20px 22px; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #0d1f4e; line-height: 1; }
+  .stat.big .stat-value { font-size: 32px; }
+  .stat-label { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .stat-up { font-size: 12px; color: #0e6e55; font-weight: 600; margin-top: 4px; }
+  .stat-down { font-size: 12px; color: #c0392b; font-weight: 600; margin-top: 4px; }
+  .stat-sub { font-size: 11px; color: #6b7280; font-style: italic; margin-top: 4px; }
+
+  /* Platform header */
+  .platform-header { display: flex; align-items: center; gap: 10px; padding: 14px 0 10px; margin-bottom: 16px; }
+  .platform-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; }
+
+  /* Bar rows */
+  .bar-row { margin-bottom: 8px; }
+  .bar-row-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .bar-row-label { font-size: 13px; color: #1a1a2e; }
+  .bar-row-value { font-size: 13px; font-weight: 600; color: #0d1f4e; }
+  .bar-track { background: #f0ece4; border-radius: 4px; height: 6px; }
+  .bar-fill { height: 6px; border-radius: 4px; }
+
+  /* Tags */
+  .tag { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; display: inline-block; }
+  .data-badge { background: #e6f4f0; color: #0e6e55; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.4px; }
+
+  /* Insights */
+  .insight { border-radius: 8px; padding: 10px 14px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+  .insight.positive { background: #e6f4f0; border: 1px solid rgba(14,110,85,0.25); border-left: 3px solid #0e6e55; }
+  .insight.warning { background: #fff8e6; border: 1px solid rgba(212,160,23,0.25); border-left: 3px solid #d4a017; }
+  .insight.info { background: #e8eef8; border: 1px solid rgba(26,58,107,0.25); border-left: 3px solid #1a3a6b; }
+  .insight-icon { font-size: 16px; flex-shrink: 0; }
+  .insight-text { font-size: 13px; color: #1a1a2e; line-height: 1.5; }
+
+  /* Section headers */
+  .section-header { border-radius: 14px; padding: 20px 22px; margin-bottom: 20px; }
+
+  /* Episode cards */
+  .ep-card { border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; border: 1px solid transparent; }
+  .ep-card.normal { background: white; border-color: rgba(126,200,227,0.25); }
+  .ep-card.new { background: #e6f4f0; border-color: #0e6e55; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 8px 10px; text-align: left; font-weight: 700; color: #0d1f4e; font-size: 11px; border-bottom: 2px solid #e2ddd5; background: #f8f7f4; }
+  td { padding: 10px; border-bottom: 1px solid #e2ddd5; }
+
+  /* Benchmark */
+  .bench-bar-row { margin-bottom: 12px; }
+  .bench-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .bench-track { background: #f3f4f6; border-radius: 6px; height: 8px; overflow: hidden; }
+  .bench-fill { height: 100%; border-radius: 6px; }
+
+  /* Mini grid */
+  .mini-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .mini-card { border-radius: 8px; padding: 10px; text-align: center; }
+  .mini-value { font-size: 20px; font-weight: 800; }
+  .mini-label { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+  .alert-green { background: #e6f4f0; border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+  .alert-purple { background: #f5f3ff; border-radius: 8px; padding: 12px 14px; }
+
+  .competitive-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #e2ddd5; }
+
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-label">+QuePíldoras</div>
+      <div class="header-title">Informe de Métricas · Octubre 2026</div>
+    </div>
+    <span class="header-badge">7+ episodios · datos reales</span>
+  </div>
+  <nav class="nav" id="nav"></nav>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const C = {
+  navy: "#0d1f4e", blue: "#1a3a6b", accent: "#7ec8e3",
+  green: "#0e6e55", muted: "#6b7280", border: "#e2ddd5",
+  text: "#1a1a2e", white: "#ffffff", bg: "#f4f2ed",
+};
+
+const sections = ["Resumen","YouTube","Spotify","LinkedIn","Instagram","TikTok","Audiencia","Benchmark","Contexto"];
+
+function barRow(label, pct, value, color) {
+  return `<div class="bar-row">
+    <div class="bar-row-header"><span class="bar-row-label">${label}</span><span class="bar-row-value">${value || pct+'%'}</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+  </div>`;
+}
+
+function stat(value, label, opts = {}) {
+  return `<div class="stat${opts.big ? ' big' : ''}">
+    <div class="stat-value">${value}</div>
+    <div class="stat-label">${label}</div>
+    ${opts.up ? `<div class="stat-up">▲ ${opts.up}</div>` : ''}
+    ${opts.down ? `<div class="stat-down">▼ ${opts.down}</div>` : ''}
+    ${opts.sub ? `<div class="stat-sub">${opts.sub}</div>` : ''}
+  </div>`;
+}
+
+function insight(icon, text, type = 'positive') {
+  return `<div class="insight ${type}"><span class="insight-icon">${icon}</span><p class="insight-text">${text}</p></div>`;
+}
+
+function platformHeader(icon, name, color, bg) {
+  return `<div class="platform-header" style="border-bottom:2px solid ${color}">
+    <div class="platform-icon" style="background:${bg};color:${color}">${icon}</div>
+    <span style="font-weight:800;font-size:16px;color:${C.navy}">${name}</span>
+  </div>`;
+}
+
+function dataBadge(text) {
+  return `<span class="data-badge">● ${text}</span>`;
+}
+
+const sectionContent = {
+  "Resumen": `
+    <div class="hero">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+        <div>
+          <div class="hero-label">+QuePíldoras</div>
+          <div class="hero-title">Informe de métricas actualizado</div>
+          <div class="hero-sub">Datos reales · Octubre 2026 · 7 episodios publicados</div>
+        </div>
+        <span class="tag" style="background:rgba(126,200,227,0.2);color:#7ec8e3">100% orgánico · 0€ inversión</span>
+      </div>
+      <div class="hero-grid">
+        ${[
+          {v:"7.371",l:"Views YouTube",s:"28 días · dato real"},
+          {v:"302",l:"Escuchas Spotify",s:"30 días · dato real"},
+          {v:"582",l:"Seguidores LinkedIn",s:"+58 nuevos en 30 días · dato real"},
+          {v:"2,1K",l:"Views TikTok",s:"últimos 7 días · dato real"},
+          {v:"318",l:"Seguidores Instagram",s:"@masquepildoraspodcast · dato real"},
+          {v:"75",l:"Seguidores TikTok",s:"@masquepildoraspodcast · dato real"},
+        ].map(k=>`<div class="kpi-card"><div class="kpi-value">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">EPISODIOS PUBLICADOS</div>
+      ${[
+        {num:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"5 may 2026",dur:"7:26",yt:"227 views · 30,8% ret.",sp:"104 escuchas",li:"2.775 imp. · 9,5% eng.",isNew:false},
+        {num:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades que necesitas",date:"20 may 2026",dur:"25:36",yt:"249 views · 17,5% ret.",sp:"64 escuchas",li:"441 imp. · 10,2% eng.",isNew:false},
+        {num:"EP02",title:"De salvar vidas en minutos a Medical Affairs (Fernando Zaragozá)",date:"3 jun 2026",dur:"30:07",yt:"—",sp:"—",li:"—",isNew:false},
+        {num:"EP03",title:"¿Me arrepiento? De médico a trabajar en pharma",date:"9 sept 2026",dur:"5:28",yt:"281 views · 20,9% ret.",sp:"—",li:"—",isNew:false},
+        {num:"EP04",title:"Ex-directivo pharma: el error que cometen los grandes líderes",date:"23 sept 2026",dur:"10:55",yt:"252 views · 18,4% ret.",sp:"—",li:"—",isNew:false},
+        {num:"EP05",title:"Del doctorado al departamento médico: así se sale del laboratorio",date:"7 oct 2026",dur:"—",yt:"42 views (reciente)",sp:"79 escuchas",li:"—",isNew:true},
+      ].map(ep=>`<div class="ep-card ${ep.isNew?'new':'normal'}">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+          <span class="tag" style="background:${ep.isNew?'rgba(14,110,85,0.15)':'rgba(13,31,78,0.1)'};color:${ep.isNew?C.green:C.navy}">${ep.num}</span>
+          ${ep.isNew?`<span class="tag" style="background:rgba(14,110,85,0.15);color:#0e6e55">🆕 PUBLICADO HOY</span>`:''}
+          <span style="font-size:12px;color:${C.muted}">${ep.date} · ${ep.dur}</span>
+        </div>
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px">${ep.title}</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <span style="font-size:12px;color:#FF0000;font-weight:600">▶ ${ep.yt}</span>
+          <span style="font-size:12px;color:#1DB954;font-weight:600">🎵 ${ep.sp}</span>
+          <span style="font-size:12px;color:#0a66c2;font-weight:600">in ${ep.li}</span>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <div>
+      <div style="font-size:13px;font-weight:700;color:${C.navy};margin-bottom:12px">INSIGHTS CLAVE</div>
+      ${insight("📺","EP05 publicado el 7 oct — ya suma 79 escuchas en Spotify y 42 vistas en YouTube. En total llevamos 7 episodios y el canal sigue creciendo 100% orgánico.")}
+      ${insight("📊","7.371 vistas en YouTube · 302 escuchas en Spotify · 2,1K vistas TikTok (7 días). Crecimiento sostenido en todas las plataformas.")}
+      ${insight("🔵","LinkedIn: 582 seguidores (+58 en 30 días). De 309 a 582 en 4 meses — casi el doble de seguidores desde el lanzamiento.","info")}
+      ${insight("⚫","TikTok: 75 seguidores (era 6 en junio). El contenido sigue siendo distribuido masivamente por el algoritmo.","info")}
+    </div>`,
+
+  "YouTube": `
+    ${platformHeader("▶","YouTube","#FF0000","#fff0f0")}
+    <div style="margin-bottom:16px">${dataBadge("DATOS REALES — 21 sept al 18 oct 2026")}</div>
+    <div class="stats-grid">
+      ${stat("7.371","Visualizaciones (28 días)",{up:"+205% tiempo de visualización",big:true})}
+      ${stat("117,6h","Tiempo de visualización (28 días)",{up:"+205% vs periodo anterior"})}
+      ${stat("+14","Nuevos suscriptores (28 días)",{up:"Total: 105 suscriptores"})}
+      ${stat("105","Suscriptores totales",{sub:"21 sept – 18 oct 2026"})}
+    </div>
+    <div class="card">
+      <div class="card-title">Top Shorts (28 días)</div>
+      <div style="background:#fff0f0;border-radius:10px;padding:14px">
+        ${barRow("Llegar a lo más alto tiene un precio. ¿Lo pagarías?",100,"1.213 vistas · 57,0%","#FF0000")}
+        ${barRow("Errores de CV al querer pasar a la industria farmacéutica",94,"1.137 · 60,8%","#FF0000")}
+        ${barRow("Del PhD a la industria farmacéutica: así se deja el laboratorio",91,"1.107 · 57,0%","#FF0000")}
+        ${barRow("¿Doctorado si o no? #phd",74,"899 · 35,9%","#FF0000")}
+        ${barRow("El ego en los líderes de la industria farmacéutica",63,"768 · 41,4%","#FF0000")}
+        ${barRow("Qué hacer para ser un MSL excepcional",39,"474 · 28,9%","#FF0000")}
+        ${barRow("El problema no es encontrar trabajo, es…",29,"357 · 28,8%","#FF0000")}
+        <p style="font-size:11px;color:${C.muted};margin-top:10px;font-style:italic">Formato: vistas · % retención media</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Vídeos largos (28 días)</div>
+      <div style="background:#f0f4ff;border-radius:10px;padding:14px">
+        ${barRow("EP03 · ¿Me arrepiento? De médico a trabajar en pharma (5:28)",100,"281 vistas · 20,9% ret.","#1a3a6b")}
+        ${barRow("EP04 · Ex-directivo pharma: el error de los grandes líderes (10:55)",90,"252 vistas · 18,4% ret.","#1a3a6b")}
+        ${barRow("EP01 · ¿Quieres ser MSL? (25:36)",89,"249 vistas · 17,5% ret.","#1a3a6b")}
+        ${barRow("EP00 · ¿Qué hay detrás? (7:26)",81,"227 vistas · 30,8% ret.","#1a3a6b")}
+        ${barRow("EP05 · Del doctorado al Dpto. Médico",15,"42 vistas (muy reciente)","#0e6e55")}
+      </div>
+    </div>
+    ${insight("🏆","Retención top: 'Errores de CV' logra 60,8% y 'Llegar a lo más alto' 57,0% — ambos muy por encima del benchmark de Shorts B2B (38-50%).")}
+    ${insight("🎬","7 Shorts en el top 28 días. Los temas de carrera profesional (CV, PhD, MSL) superan con claridad al contenido de branding.","info")}
+    ${insight("📺","EP03 lidera en episodios largos con 281 vistas. El formato de 5 minutos engancha mejor que los episodios más largos (20-30 min).","info")}
+    ${insight("⚠️","117,6h de tiempo de visualización (+205%): el canal está madurando y la audiencia consume más contenido por sesión.","warning")}`,
+
+  "Spotify": `
+    ${platformHeader("🎵","Spotify for Creators","#1DB954","#f0fdf4")}
+    <div style="margin-bottom:16px">${dataBadge("DATOS REALES — últimos 30 días · oct 2026")}</div>
+    <div class="stats-grid">
+      ${stat("302","Escuchas en Spotify (30 días)",{up:"+205% tiempo de consumo",big:true})}
+      ${stat("74h 32min","Horas de reproducción (30 días)",{up:"+264,5% vs periodo anterior"})}
+      ${stat("138","Seguidores totales",{up:"+58 últimos 30 días"})}
+      ${stat("1.167","Total escuchas acumuladas",{sub:"EP00 al EP05"})}
+    </div>
+    <div class="card">
+      <div class="card-title">Clasificación de episodios · Reproducciones</div>
+      ${[
+        {ep:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"5 may",dur:"7:26",esc:99,nuevo:false},
+        {ep:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades",date:"20 may",dur:"25:36",esc:67,nuevo:false},
+        {ep:"EP02",title:"De salvar vidas en minutos a Medical Affairs",date:"3 jun",dur:"30:07",esc:30,nuevo:true},
+      ].map(e=>`<div style="background:${e.nuevo?'#e6f4f0':'#f0fdf4'};border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:3px">
+            <span class="tag" style="background:${e.nuevo?'rgba(14,110,85,0.15)':'rgba(29,185,84,0.15)'};color:${e.nuevo?C.green:'#1DB954'}">${e.ep}</span>
+            ${e.nuevo?`<span class="tag" style="background:rgba(14,110,85,0.15);color:#0e6e55">Nuevo</span>`:''}
+            <span style="font-size:11px;color:${C.muted}">${e.date} · ${e.dur}</span>
+          </div>
+          <div style="font-size:13px;font-weight:600">${e.title}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:22px;font-weight:800;color:#1DB954">${e.esc}</div>
+          <div style="font-size:11px;color:${C.muted}">escuchas</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title">Discovery · Cómo encuentran el podcast (dato mayo)</div>
+      ${barRow("Spotify Search",100,"676 imp.","#1DB954")}
+      ${barRow("Spotify Home",48,"322 imp.","#1DB954")}
+      ${barRow("Spotify Library",7,"47 imp.","#1DB954")}
+      <p style="font-size:12px;color:${C.muted};font-style:italic;margin-top:8px">64,7% del discovery viene de búsqueda activa — el SEO del podcast está funcionando</p>
+    </div>
+    ${insight("📈","302 escuchas en 30 días · 1.167 acumuladas · 138 seguidores. EP05 ya suma 79 escuchas siendo el episodio más reciente. La audiencia en Spotify crece de forma constante.")}
+    ${insight("🏆","EP00 (99) lidera sobre EP01 (67) a pesar de ser más corto. El formato de introducción/trailer conecta bien con audiencia nueva.","info")}
+    ${insight("🌍","Discovery data de mayo: 14 países de audiencia, España 73,6%. El SEO del podcast está funcionando con 676 impresiones vía Spotify Search.","info")}`,
+
+  "LinkedIn": `
+    ${platformHeader("in","LinkedIn","#0a66c2","#e7f0fb")}
+    <div style="margin-bottom:16px">${dataBadge("DATOS REALES — 18 sept al 17 oct 2026")}</div>
+    <div class="stats-grid">
+      ${stat("582","Seguidores totales",{up:"+58 nuevos en 30 días",big:true})}
+      ${stat("16","Nuevos seguidores (7 días)",{sub:"Últimos 7 días"})}
+      ${stat("2.998","Impresiones publicación (7 días)",{down:"-30,4%"})}
+      ${stat("75","Apariciones en búsquedas (7 días)",{up:"+19%"})}
+    </div>
+    <div class="stats-grid">
+      ${stat("208","Visualizaciones página (30 días)",{down:"-46,4%"})}
+      ${stat("128","Visitantes únicos (30 días)",{down:"-36,3%"})}
+    </div>
+    <div class="card">
+      <div class="card-title">Top post: Medical Affairs</div>
+      <div style="font-size:12px;color:${C.muted};margin-bottom:14px">«No te vas a creer la realidad detrás de Medical Affairs 🤫»</div>
+      <div class="mini-grid-3">
+        ${[{v:"2.775",l:"Impresiones"},{v:"2.007",l:"Miembros alcanzados"},{v:"265",l:"Interacciones totales"},{v:"9,5%",l:"Tasa interacción"},{v:"234",l:"Clics"},{v:"8,4%",l:"CTR clics"}]
+          .map(s=>`<div class="mini-card" style="background:#e7f0fb"><div class="mini-value" style="color:#0a66c2">${s.v}</div><div class="mini-label">${s.l}</div></div>`).join('')}
+      </div>
+    </div>
+    ${insight("🏆","582 seguidores totales — casi el doble desde el lanzamiento (era 309 en junio). +58 nuevos en 30 días con 0€ de inversión. Nuevos seguidores: Medical Directors, MSL Oncology, Marketing Managers.")}
+    ${insight("📉","Las impresiones de los últimos 7 días bajan (-30,4%) respecto a la semana anterior. Normal en semana sin publicaciones — el lanzamiento de EP02 hoy debería revertirlo.","warning")}
+    ${insight("🔍","75 apariciones en búsquedas esta semana (+19%). El perfil del podcast está ganando relevancia en búsquedas de profesionales de farma.","info")}`,
+
+  "Instagram": `
+    ${platformHeader("📷","Instagram","#E1306C","#fdf0f5")}
+    <div style="margin-bottom:16px">${dataBadge("DATOS REALES — últimos 30 días · oct 2026")}</div>
+    <div class="stats-grid">
+      ${stat("318","Seguidores @masquepildoraspodcast",{up:"Dato real · oct 2026",big:true})}
+      ${stat("1.770","Cuentas alcanzadas (30 días)",{up:"63,1% no seguidores"})}
+      ${stat("9.393","Visualizaciones (30 días)",{sub:"Reels + Historias + Publicaciones"})}
+      ${stat("438","Interacciones (30 días)",{sub:"72 cuentas con interacción"})}
+    </div>
+    <div class="card">
+      <div class="card-title">Visualizaciones por formato</div>
+      ${barRow("Reels",100,"47,2%","#E1306C")}
+      ${barRow("Historias",74,"34,7%","#E1306C")}
+      ${barRow("Publicaciones",38,"18,1%","#E1306C")}
+    </div>
+    <div class="card">
+      <div class="card-title">Interacciones por formato</div>
+      ${barRow("Reels",100,"38,1%","#E1306C")}
+      ${barRow("Historias",93,"35,6%","#E1306C")}
+      ${barRow("Publicaciones",69,"26,3%","#E1306C")}
+    </div>
+    <div class="card">
+      <div class="card-title">Actividad de perfil (30 días)</div>
+      <div class="mini-grid-3">
+        ${[{v:"202",l:"Actividad total"},{v:"183",l:"Visitas al perfil"},{v:"19",l:"Toques enlace externo"}]
+          .map(s=>`<div class="mini-card" style="background:#fdf0f5"><div class="mini-value" style="color:#E1306C">${s.v}</div><div class="mini-label">${s.l}</div></div>`).join('')}
+      </div>
+    </div>
+    ${insight("🔥","63,1% de las cuentas alcanzadas son NO seguidores. Con solo 81 seguidores, el contenido llega a 1.770 cuentas únicas — alcance orgánico excepcional para una cuenta en fase inicial.")}
+    ${insight("🎬","Los Reels lideran con el 47,2% de visualizaciones — el formato video corto está funcionando. Las Historias (34,7%) también tienen fuerte tracción.","info")}
+    ${insight("🔗","19 toques en el enlace externo del perfil en 30 días. Con 183 visitas al perfil, el CTR del enlace es del 10,4% — muy por encima de la media.","info")}`,
+
+  "TikTok": `
+    ${platformHeader("⚫","TikTok","#010101","#f5f5f5")}
+    <div style="margin-bottom:16px">${dataBadge("DATOS REALES — últimos 7 días · oct 2026")}</div>
+    <div class="stats-grid">
+      ${stat("2,1K","Visualizaciones de videos (7 días)",{up:"93,7% desde Página Para Ti",big:true})}
+      ${stat("72","Me gusta (28 días)",{up:"+453,8% · +59"})}
+      ${stat("36","Visualizaciones de perfil (28 días)",{up:"+227,3% · +25"})}
+      ${stat("75","Seguidores totales",{up:"+1.150% desde junio 2026"})}
+    </div>
+    <div class="card">
+      <div class="card-title">Publicación más reciente</div>
+      <div style="background:#f5f5f5;border-radius:10px;padding:14px">
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <span class="tag" style="background:rgba(1,1,1,0.1);color:#010101">oct 2026</span>
+          <span class="tag" style="background:rgba(14,110,85,0.15);color:#0e6e55">Nuevo episodio</span>
+        </div>
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px">¿Dejarías salvar vidas por trabajar en pharma? Hoy estrenamos nuevo episodio en...</div>
+        <div style="display:flex;gap:16px">
+          <span style="font-size:13px;font-weight:700;color:#0d1f4e">▶ 766 views</span>
+          <span style="font-size:13px;font-weight:700;color:#E1306C">♥ 5 likes</span>
+          <span style="font-size:13px;color:${C.muted}">0:37</span>
+        </div>
+      </div>
+    </div>
+    ${insight("🤯","6.600 vistas con solo 6 seguidores. El ratio views/follower es de 1.100x — el algoritmo de TikTok está distribuyendo el contenido masivamente sin necesidad de base de seguidores.")}
+    ${insight("📈","+453,8% de me gusta en 28 días — el engagement está creciendo mucho más rápido que las vistas. La audiencia que ve el contenido está respondiendo positivamente.","info")}
+    ${insight("⚡","TikTok es la plataforma con mayor potencial de crecimiento viral. Con la misma estrategia de Shorts de YouTube adaptada a TikTok, el crecimiento podría ser exponencial.","info")}`,
+
+  "Audiencia": `
+    <div class="section-header" style="background:linear-gradient(135deg,#0d1f4e,#1a3a6b)">
+      <div style="color:#7ec8e3;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Quién nos escucha</div>
+      <h3 style="color:white;font-size:18px;font-weight:700">Perfil de la audiencia</h3>
+      <p style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:4px">Datos de mayo 2026 — Spotify, YouTube y LinkedIn</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">EDAD — Spotify</div>
+        ${barRow("35–44 años (dominante)",100,"40,0%","#1DB954")}
+        ${barRow("28–34 años",71,"28,6%","#1DB954")}
+        ${barRow("45–59 años",33,"13,3%","#1DB954")}
+        ${barRow("23–27 años",33,"13,3%","#1DB954")}
+        ${barRow("18–22 años",7,"2,9%","#1DB954")}
+      </div>
+      <div class="card">
+        <div class="card-title">EDAD — TikTok/IG</div>
+        ${barRow("25–34 años (dominante)",100,"44,6%","#010101")}
+        ${barRow("18–24 años",85,"37,7%","#010101")}
+        ${barRow("35–44 años",18,"8,0%","#010101")}
+        ${barRow("45–54 años",14,"6,4%","#010101")}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">GÉNERO — Spotify</div>
+        ${barRow("Mujeres",100,"62,9%","#BC3CB4")}
+        ${barRow("Hombres",52,"32,4%","#4A90D9")}
+      </div>
+      <div class="card">
+        <div class="card-title">GÉNERO — YouTube</div>
+        ${barRow("Hombres",100,"81,4%","#4A90D9")}
+        ${barRow("Mujeres",23,"18,6%","#BC3CB4")}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">GEOGRAFÍA — Combinada</div>
+      ${barRow("España (dominante)",100,"73,6% Spotify · 63,3% YT","#0d1f4e")}
+      ${barRow("Latinoamérica",15,"~9% LinkedIn + Spotify","#0d1f4e")}
+      ${barRow("Rumanía",17,"12,2% TikTok · 2,9% Spotify","#0d1f4e")}
+      ${barRow("EEUU",5,"3,6% Spotify · 1,4% TikTok","#0d1f4e")}
+      ${barRow("UK",4,"2,9% Spotify","#0d1f4e")}
+      ${barRow("Israel",5,"3,6% Spotify","#0d1f4e")}
+    </div>
+    <div class="card">
+      <div class="card-title">CARGOS — Audiencia LinkedIn (post Medical Affairs)</div>
+      ${barRow("Experto en investigación clínica",100,"15,7%","#0a66c2")}
+      ${barRow("Comercial",25,"4,0%","#0a66c2")}
+      ${barRow("Gestor de proyectos",18,"2,8%","#0a66c2")}
+      ${barRow("Asesor médico",17,"2,7%","#0a66c2")}
+      ${barRow("Médico",15,"2,4%","#0a66c2")}
+    </div>
+    ${insight("🎯","Audiencia dual: Spotify/LinkedIn atrae perfil 35-44 con experiencia (potencial mentoring senior), TikTok/IG atrae 18-34 buscando entrar al sector (potencial mentoring junior).")}
+    ${insight("👩‍🔬","62,9% de oyentes en Spotify son mujeres — dato muy relevante para el programa de mentoría y propuesta de valor hacia empresas con iniciativas de diversidad en farma.","info")}
+    ${insight("🌍","Presencia en 14 países con especial fuerza en LATAM. Oportunidad para episodios con invitados internacionales.","info")}`,
+
+  "Benchmark": `
+    <div class="section-header" style="background:linear-gradient(135deg,#0d1f4e,#2d1b6b)">
+      <div style="color:#c4b5fd;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Comparativa de mercado</div>
+      <h3 style="color:white;font-size:18px;font-weight:700">Benchmarking · Fase de lanzamiento</h3>
+      <p style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:4px">Vs. media industria · podcasts farma nicho · Tengo un Plan · oct 2026</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">¿Dónde estáis vs. la media de podcasts nuevos?</div>
+      <div class="card-sub">Fuente: Loupod / Podtrac industry benchmarks 2025 · primeros 30 días por episodio</div>
+      ${[
+        {label:"Mediana global (50%)",v:"100–300",unit:"escuchas/ep",pct:20,color:"#d1d5db",highlight:false},
+        {label:"Top 25% podcasts",v:"300–1.000",unit:"escuchas/ep",pct:40,color:"#93c5fd",highlight:false},
+        {label:"+Que Píldoras · EP01",v:"99 Spotify + 9.6K YT",unit:"≈ top 20–25%",pct:60,color:"#0d1f4e",highlight:true},
+        {label:"Top 10% podcasts",v:">3.000",unit:"escuchas/ep",pct:85,color:"#6366f1",highlight:false},
+      ].map(r=>`<div class="bench-bar-row">
+        <div class="bench-bar-header">
+          <span style="font-size:13px;font-weight:${r.highlight?'700':'500'};color:${r.highlight?C.navy:C.text}">${r.label}</span>
+          <span style="font-size:12px;color:${r.highlight?C.green:C.muted};font-weight:${r.highlight?'700':'400'}">${r.v} <span style="opacity:0.7">${r.unit}</span></span>
+        </div>
+        <div class="bench-track"><div class="bench-fill" style="width:${r.pct}%;background:${r.color}"></div></div>
+      </div>`).join('')}
+      <div class="alert-green">
+        <p style="font-size:12px;color:#0e6e55;font-weight:700">✅ Con 7.371 vistas en YouTube · 302 escuchas Spotify · 582 seguidores LinkedIn, superamos la mediana global de podcasts B2B en fase de lanzamiento.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Vs. podcasts de nicho farma/salud en España</div>
+      <div class="card-sub">Estimaciones basadas en datos públicos de plataformas · podcasts comparables en fase inicial</div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>${["Podcast","Seguidores Spotify","YouTube","LinkedIn","Fase"].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${[
+              {name:"Pharma New Talent",sp:"~200–400",yt:"Sin canal activo",li:"~500–1.000",fase:"Madurez (2+ años)",highlight:false},
+              {name:"Pharma Talento y Más+",sp:"~100–200",yt:"Sin canal activo",li:"~300–600",fase:"Lanzamiento",highlight:false},
+              {name:"Farmacéuticos Digitales",sp:"~300–500",yt:"Sin canal activo",li:"~400–800",fase:"Madurez (1+ año)",highlight:false},
+              {name:"+Que Píldoras ⭐",sp:"302 escuchas/mes",yt:"7.371 vistas/28d",li:"582 seguidores",fase:"En activo (mes 6)",highlight:true},
+            ].map(r=>`<tr style="background:${r.highlight?'#e6f4f0':'transparent'}">
+              <td style="font-weight:${r.highlight?'700':'500'};color:${r.highlight?C.green:C.text}">${r.name}</td>
+              <td style="color:${r.highlight?C.green:C.muted};font-weight:${r.highlight?'600':'400'}">${r.sp}</td>
+              <td style="color:${r.highlight?C.green:C.muted};font-weight:${r.highlight?'600':'400'}">${r.yt}</td>
+              <td style="color:${r.highlight?C.green:C.muted};font-weight:${r.highlight?'600':'400'}">${r.li}</td>
+              <td><span style="background:${r.highlight?'#0e6e55':'#e5e7eb'};color:${r.highlight?'white':C.muted};font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600">${r.fase}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:${C.muted};margin-top:10px;font-style:italic">⚠️ Los datos de competidores son estimaciones basadas en perfiles públicos. Los podcasts de nicho farma rara vez tienen canal de YouTube activo — vosotros sí.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Referencia aspiracional: Tengo un Plan</div>
+      <div class="card-sub">#1 podcast de crecimiento personal en España · Juan Domínguez y Sergio Beguería · 548 episodios</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        ${[
+          {metric:"Suscriptores/seguidores",tengo:"2.000.000+",mqp:"318–582",x:"~4.000x"},
+          {metric:"Episodios publicados",tengo:"548",mqp:"3",x:"Mes 2 vs. 6+ años"},
+          {metric:"Eventos presenciales",tengo:"Sold out 2025",mqp:"—",x:"Objetivo futuro"},
+          {metric:"Frecuencia",tengo:"2x semana",mqp:"~1 cada 2 sem.",x:"Gap de cadencia"},
+        ].map(r=>`<div style="background:#f8f7f4;border-radius:10px;padding:12px">
+          <p style="font-size:11px;color:${C.muted};font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px">${r.metric}</p>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <div>
+              <p style="font-size:11px;color:${C.muted};margin-bottom:2px">Tengo un Plan</p>
+              <p style="font-size:15px;font-weight:800;color:#6366f1">${r.tengo}</p>
+            </div>
+            <div style="text-align:right">
+              <p style="font-size:11px;color:${C.muted};margin-bottom:2px">+Que Píldoras</p>
+              <p style="font-size:15px;font-weight:800;color:${C.navy}">${r.mqp}</p>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <span style="background:#ede9fe;color:#6366f1;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">${r.x}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="alert-purple">
+        <p style="font-size:13px;color:#4c1d95;font-weight:600;margin-bottom:4px">🎯 El camino: Tengo un Plan tardó ~3 años en alcanzar el top 10 de España</p>
+        <p style="font-size:12px;color:#6d28d9">Con una estrategia multi-plataforma (YouTube + TikTok + LinkedIn) y un nicho sin competidor dominante, +QP tiene una ventana de oportunidad que Tengo un Plan no tuvo: el canal de farma/salud en español está virgen.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ventajas competitivas de +Que Píldoras vs. nicho farma</div>
+      ${[
+        {icon:"📺",title:"Único con YouTube activo",desc:"7.371 vistas/mes — los competidores de nicho farma no tienen presencia en vídeo"},
+        {icon:"⚡",title:"TikTok con ratio viral",desc:"6.600 vistas con 6 seguidores (1.100x) — ningún podcast farma en España tiene esto"},
+        {icon:"🎙️",title:"Acceso a fuentes únicas",desc:"Invitados como Fernando Zaragozá (CSIC) dan credibilidad científica imposible de replicar fácilmente"},
+        {icon:"🌍",title:"Audiencia internacional",desc:"14 países desde el mes 1 — el mercado hispanohablante (500M+ personas) es el objetivo real"},
+      ].map(v=>`<div class="competitive-row">
+        <span style="font-size:20px;flex-shrink:0">${v.icon}</span>
+        <div>
+          <p style="font-size:13px;font-weight:700;color:${C.navy};margin-bottom:2px">${v.title}</p>
+          <p style="font-size:12px;color:${C.muted}">${v.desc}</p>
+        </div>
+      </div>`).join('')}
+    </div>`,
+
+  "Contexto": `
+    <div class="section-header" style="background:linear-gradient(135deg,#3d0070,#5c1f8e)">
+      <div style="color:#d4a0ff;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Benchmarks del sector</div>
+      <h3 style="color:white;font-size:18px;font-weight:700">+QuePíldoras vs. Industria</h3>
+      <p style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:4px">Mes 1–6 · 7 episodios · datos reales YouTube</p>
+    </div>
+    ${[
+      {metrica:"Retención Short top (Del lab. a ensayos)",valor:"79,8%",benchmark:"38–50% (shorts de nicho)",ref:"~45-55%",resultado:"Top 5% mundial en retención Shorts",color:"#0e6e55"},
+      {metrica:"Watch time YouTube (28 días)",valor:"40,8h",benchmark:"<10h (canal nuevo sem 1-4)",ref:"~20-40h (marca preexistente)",resultado:"+972% vs periodo anterior",color:"#0e6e55"},
+      {metrica:"Tasa interacción LinkedIn",valor:"14,8%",benchmark:"1–3% (B2B)",ref:"~5-10%",resultado:"+5x sobre benchmark B2B",color:"#0e6e55"},
+      {metrica:"Audiencia nueva Instagram",valor:"63,9%",benchmark:"~30-40% (cuentas B2B nuevas)",ref:"~50-60% (marca preexistente)",resultado:"Alcance viral orgánico",color:"#0e6e55"},
+      {metrica:"Escuchas Spotify (EP00+EP01)",valor:"168 totales",benchmark:"50-200 (podcast nuevo sem 1-4)",ref:"500-1.000+ (marca preexistente)",resultado:"Dentro del benchmark para canal nuevo",color:"#d4a017"},
+      {metrica:"Retención EP01 vídeo largo",valor:"17,5%",benchmark:"~25-40% (podcast nicho, vídeo largo)",ref:"~30-45%",resultado:"Área de mejora — hook inicial",color:"#c0392b"},
+    ].map(row=>`<div style="background:white;border-radius:10px;border:1px solid #e2ddd5;border-left:4px solid ${row.color};padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+        <div style="flex:1">
+          <p style="font-weight:700;font-size:14px;color:#0d1f4e;margin-bottom:6px">${row.metrica}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span style="font-size:12px;color:#6b7280">Benchmark: <strong>${row.benchmark}</strong></span>
+            <span style="font-size:12px;color:#6b7280">Ref: <strong>${row.ref}</strong></span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:22px;font-weight:800;color:${row.color}">${row.valor}</p>
+          <p style="font-size:11px;color:${row.color};font-weight:600">${row.resultado}</p>
+        </div>
+      </div>
+    </div>`).join('')}
+    <div style="background:#fffbea;border:1px solid #f6d860;border-radius:12px;padding:16px 20px;margin-top:8px">
+      <p style="font-weight:700;color:#92600a;margin-bottom:8px;font-size:14px">📌 Nota metodológica</p>
+      <p style="color:#7a5010;font-size:13px;line-height:1.6">Datos obtenidos directamente de las plataformas el 3 de junio de 2026: YouTube Studio (6 may–2 jun), Spotify for Creators (30 días), LinkedIn Admin Analytics (3 may–1 jun), TikTok Studio (28 días). Instagram Insights obtenidos desde web.instagram.com/accounts/insights/ (período 30 días). Los benchmarks B2B son datos de Loupod/Podtrac industry benchmarks 2025.</p>
+    </div>`
+};
+
+// Render nav and sections
+const nav = document.getElementById('nav');
+const content = document.getElementById('content');
+
+sections.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'nav-btn' + (s === 'Resumen' ? ' active' : '');
+  btn.textContent = s;
+  btn.onclick = () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    document.getElementById('sec-' + s).classList.add('active');
+  };
+  nav.appendChild(btn);
+
+  const div = document.createElement('div');
+  div.className = 'section' + (s === 'Resumen' ? ' active' : '');
+  div.id = 'sec-' + s;
+  div.innerHTML = sectionContent[s] || '';
+  content.appendChild(div);
+});
+</script>
+</body>
+</html>
