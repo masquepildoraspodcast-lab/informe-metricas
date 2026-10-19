@@ -130,7 +130,7 @@ const C = {
   text: "#1a1a2e", white: "#ffffff", bg: "#f4f2ed",
 };
 
-const sections = ["Resumen","YouTube","Spotify","LinkedIn","Instagram","TikTok","Audiencia","Benchmark","Contexto"];
+const sections = ["Resumen","Totales","YouTube","Spotify","LinkedIn","Instagram","TikTok","Audiencia","Benchmark","Contexto"];
 
 function barRow(label, pct, value, color) {
   return `<div class="bar-row">
@@ -187,6 +187,26 @@ const sectionContent = {
       </div>
     </div>
 
+    <div class="card" style="border:2px solid #7ec8e3;background:linear-gradient(to bottom right,#f0f8ff,white)">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>TOTALES DESDE EL LANZAMIENTO (may 2026)</span>
+        <span style="font-size:11px;font-weight:400;color:#6b7280">→ ver tab "Totales" para detalle</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px">
+        ${[
+          {icon:"▶",v:"~19.3K",l:"Vistas YouTube",c:"#FF0000"},
+          {icon:"🎵",v:"1.167",l:"Escuchas Spotify",c:"#1DB954"},
+          {icon:"⚫",v:"42.7K",l:"Vistas TikTok",c:"#000000"},
+          {icon:"in",v:"582",l:"Seguidores LinkedIn",c:"#0a66c2"},
+          {icon:"📷",v:"318",l:"Seguidores Instagram",c:"#e1306c"},
+        ].map(k=>`<div style="border-radius:8px;border:1px solid #e2ddd5;padding:10px;text-align:center;background:white">
+          <div style="font-size:14px;margin-bottom:3px">${k.icon}</div>
+          <div style="font-size:20px;font-weight:800;color:${k.c}">${k.v}</div>
+          <div style="font-size:11px;color:#6b7280;margin-top:2px">${k.l}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">EPISODIOS PUBLICADOS</div>
       ${[
@@ -217,6 +237,86 @@ const sectionContent = {
       ${insight("📊","7.371 vistas en YouTube · 302 escuchas en Spotify · 2,1K vistas TikTok (7 días). Crecimiento sostenido en todas las plataformas.")}
       ${insight("🔵","LinkedIn: 582 seguidores (+58 en 30 días). De 309 a 582 en 4 meses — casi el doble de seguidores desde el lanzamiento.","info")}
       ${insight("⚫","TikTok: 75 seguidores (era 6 en junio). El contenido sigue siendo distribuido masivamente por el algoritmo.","info")}
+    </div>`,
+
+  "Totales": `
+    <div class="hero" style="background:linear-gradient(135deg,#1a1a2e,#0d1f4e)">
+      <div style="margin-bottom:20px">
+        <div class="hero-label">Datos desde el lanzamiento · Mayo 2026</div>
+        <div class="hero-title">Totales acumulados por canal</div>
+        <div class="hero-sub">Cifras reales desde el primer día — todas las plataformas</div>
+      </div>
+      <div class="hero-grid">
+        ${[
+          {v:"~19.3K",l:"Vistas YouTube",s:"Shorts + episodios"},
+          {v:"105",l:"Suscriptores YouTube",s:"Canal principal"},
+          {v:"1.167",l:"Escuchas Spotify",s:"En total · todas las plataformas"},
+          {v:"531",l:"Oyentes únicos Spotify",s:"En total"},
+          {v:"138",l:"Seguidores Spotify",s:"Seguidores del podcast"},
+          {v:"582",l:"Seguidores LinkedIn",s:"@JaimeGarridoJuncal"},
+          {v:"42.7K",l:"Vistas TikTok",s:"Desde mayo 2026"},
+          {v:"75",l:"Seguidores TikTok",s:"@masquepildoraspodcast"},
+          {v:"318",l:"Seguidores Instagram",s:"@masquepildoraspodcast"},
+        ].map(k=>`<div class="kpi-card"><div class="kpi-value">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">YOUTUBE · Desde el lanzamiento (may 2026)</div>
+      <div class="stats-grid">
+        ${stat("~19.3K","Vistas totales (Shorts + episodios)",{sub:"Suma de todos los vídeos publicados"})}
+        ${stat("105","Suscriptores totales",{up:"+14 en los últimos 28 días"})}
+        ${stat("9","Episodios largos publicados",{sub:"~2.541 vistas entre todos"})}
+        ${stat("20+","Shorts publicados",{sub:"~16.756 vistas en total"})}
+      </div>
+      ${insight("📺","El canal tiene ~19.300 vistas acumuladas desde mayo 2026. Los Shorts representan el ~87% del total de vistas, siendo el principal motor de descubrimiento.")}
+    </div>
+
+    <div class="card">
+      <div class="card-title">SPOTIFY · Desde el lanzamiento (may 2026)</div>
+      <div class="stats-grid">
+        ${stat("1.167","Escuchas totales acumuladas",{sub:"En todas las plataformas",big:true})}
+        ${stat("531","Oyentes únicos totales",{sub:"Audiencia única"})}
+        ${stat("138","Seguidores del podcast",{up:"+58 en los últimos 30 días"})}
+        ${stat("6","Episodios en Spotify",{sub:"EP00 al EP05"})}
+      </div>
+      ${insight("🎵","1.167 escuchas totales en 5 meses — con 6 episodios y crecimiento 100% orgánico. El crecimiento en octubre (+302 en 30 días) representa el 26% de todo el total histórico.")}
+    </div>
+
+    <div class="card">
+      <div class="card-title">TIKTOK · Desde el lanzamiento (may 2026)</div>
+      <div class="stats-grid">
+        ${stat("42.7K","Visualizaciones totales",{big:true,sub:"Desde mayo 2026 (365 días)"})}
+        ${stat("75","Seguidores",{up:"Desde 6 seguidores en junio 2026"})}
+        ${stat("1.5K","Me gusta totales",{sub:"Acumulado desde el inicio"})}
+        ${stat("28","Veces compartido",{sub:"Acumulado desde el inicio"})}
+      </div>
+      ${insight("⚫","42.700 visualizaciones en TikTok desde mayo 2026. El algoritmo de TikTok está distribuyendo el contenido masivamente — el canal tiene 12,5x más views que suscriptores, señal de alto potencial viral.")}
+    </div>
+
+    <div class="card">
+      <div class="card-title">REDES SOCIALES · Seguidores acumulados</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <div style="background:#e6f0ff;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#0a66c2;font-weight:700;letter-spacing:1px;margin-bottom:4px">LINKEDIN</div>
+          <div style="font-size:28px;font-weight:800;color:#0a66c2">582</div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">seguidores</div>
+          <div style="font-size:11px;color:#0e6e55;margin-top:2px">+88% desde jun 2026</div>
+        </div>
+        <div style="background:#fce4ec;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#e1306c;font-weight:700;letter-spacing:1px;margin-bottom:4px">INSTAGRAM</div>
+          <div style="font-size:28px;font-weight:800;color:#e1306c">318</div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">seguidores</div>
+          <div style="font-size:11px;color:#0e6e55;margin-top:2px">crecimiento orgánico</div>
+        </div>
+        <div style="background:#f0f0f0;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#000000;font-weight:700;letter-spacing:1px;margin-bottom:4px">TIKTOK</div>
+          <div style="font-size:28px;font-weight:800;color:#000000">75</div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">seguidores</div>
+          <div style="font-size:11px;color:#0e6e55;margin-top:2px">12,5x más views que followers</div>
+        </div>
+      </div>
+      ${insight("📊","Resumen de presencia digital: en 5 meses el podcast ha acumulado seguidores en 4 plataformas diferentes sin ninguna inversión en publicidad. LinkedIn (582) y TikTok (42.7K vistas) son los canales con mayor tracción.")}
     </div>`,
 
   "YouTube": `
