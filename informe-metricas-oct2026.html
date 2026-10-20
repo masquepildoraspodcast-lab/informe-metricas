@@ -375,16 +375,21 @@ const sectionContent = {
       ${stat("1.167","Total escuchas acumuladas",{sub:"EP00 al EP08 · 9 episodios"})}
     </div>
     <div class="card">
-      <div class="card-title">Clasificación de episodios · Reproducciones</div>
+      <div class="card-title">Clasificación de episodios · Reproducciones acumuladas (todos los datos disponibles)</div>
       ${[
-        {ep:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"5 may",dur:"7:26",esc:99,nuevo:false},
-        {ep:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades",date:"20 may",dur:"25:36",esc:67,nuevo:false},
-        {ep:"EP02",title:"De salvar vidas en minutos a Medical Affairs",date:"3 jun",dur:"30:07",esc:30,nuevo:true},
-      ].map(e=>`<div style="background:${e.nuevo?'#e6f4f0':'#f0fdf4'};border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        {ep:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"6 may",dur:"7:27",esc:104},
+        {ep:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades",date:"20 may",dur:"25:37",esc:67},
+        {ep:"EP08",title:"Del doctorado al departamento médico",date:"7 oct",dur:"42:36",esc:79},
+        {ep:"EP02",title:"De salvar vidas en minutos a Medical Affairs",date:"3 jun",dur:"30:08",esc:30},
+        {ep:"EP03",title:"¿Quién toma las decisiones en la industria?",date:"17 jun",dur:"24:49",esc:"—"},
+        {ep:"EP04",title:"20 años en Medical Affairs",date:"1 jul",dur:"27:20",esc:"—"},
+        {ep:"EP05",title:"¿Cómo llegan los medicamentos a distintos países?",date:"13 jul",dur:"23:10",esc:"—"},
+        {ep:"EP06",title:"¿Me arrepiento? De médico a pharma",date:"9 sept",dur:"26:09",esc:"—"},
+        {ep:"EP07",title:"Ex-directivo pharma: el error de los grandes líderes",date:"23 sept",dur:"59:21",esc:"—"},
+      ].map(e=>`<div style="background:#f0fdf4;border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <div>
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:3px">
-            <span class="tag" style="background:${e.nuevo?'rgba(14,110,85,0.15)':'rgba(29,185,84,0.15)'};color:${e.nuevo?C.green:'#1DB954'}">${e.ep}</span>
-            ${e.nuevo?`<span class="tag" style="background:rgba(14,110,85,0.15);color:#0e6e55">Nuevo</span>`:''}
+            <span class="tag" style="background:rgba(29,185,84,0.15);color:#1DB954">${e.ep}</span>
             <span style="font-size:11px;color:${C.muted}">${e.date} · ${e.dur}</span>
           </div>
           <div style="font-size:13px;font-weight:600">${e.title}</div>
@@ -402,7 +407,7 @@ const sectionContent = {
       ${barRow("Spotify Library",7,"47 imp.","#1DB954")}
       <p style="font-size:12px;color:${C.muted};font-style:italic;margin-top:8px">64,7% del discovery viene de búsqueda activa — el SEO del podcast está funcionando</p>
     </div>
-    ${insight("📈","302 escuchas en 30 días · 1.167 acumuladas · 138 seguidores. EP05 ya suma 79 escuchas siendo el episodio más reciente. La audiencia en Spotify crece de forma constante.")}
+    ${insight("📈","302 escuchas en 30 días · 1.167 acumuladas · 138 seguidores. EP08 (Del doctorado al Dpto. Médico) ya suma 79 escuchas siendo el más reciente. La audiencia en Spotify crece de forma constante.")}
     ${insight("🏆","EP00 (99) lidera sobre EP01 (67) a pesar de ser más corto. El formato de introducción/trailer conecta bien con audiencia nueva.","info")}
     ${insight("🌍","Discovery data de mayo: 14 países de audiencia, España 73,6%. El SEO del podcast está funcionando con 676 impresiones vía Spotify Search.","info")}`,
 
@@ -428,7 +433,7 @@ const sectionContent = {
       </div>
     </div>
     ${insight("🏆","582 seguidores totales — casi el doble desde el lanzamiento (era 309 en junio). +58 nuevos en 30 días con 0€ de inversión. Nuevos seguidores: Medical Directors, MSL Oncology, Marketing Managers.")}
-    ${insight("📉","Las impresiones de los últimos 7 días bajan (-30,4%) respecto a la semana anterior. Normal en semana sin publicaciones — el lanzamiento de EP02 hoy debería revertirlo.","warning")}
+    ${insight("📉","Las impresiones de los últimos 7 días bajan (-30,4%) respecto a la semana anterior. Normal en semana sin publicaciones — el lanzamiento de EP09 mañana (21 oct) debería revertirlo.","warning")}
     ${insight("🔍","75 apariciones en búsquedas esta semana (+19%). El perfil del podcast está ganando relevancia en búsquedas de profesionales de farma.","info")}`,
 
   "Instagram": `
@@ -459,7 +464,7 @@ const sectionContent = {
           .map(s=>`<div class="mini-card" style="background:#fdf0f5"><div class="mini-value" style="color:#E1306C">${s.v}</div><div class="mini-label">${s.l}</div></div>`).join('')}
       </div>
     </div>
-    ${insight("🔥","63,1% de las cuentas alcanzadas son NO seguidores. Con solo 81 seguidores, el contenido llega a 1.770 cuentas únicas — alcance orgánico excepcional para una cuenta en fase inicial.")}
+    ${insight("🔥","63,1% de las cuentas alcanzadas son NO seguidores. Con 318 seguidores, el contenido llega a 1.770 cuentas únicas — alcance orgánico excepcional para una cuenta en fase inicial.")}
     ${insight("🎬","Los Reels lideran con el 47,2% de visualizaciones — el formato video corto está funcionando. Las Historias (34,7%) también tienen fuerte tracción.","info")}
     ${insight("🔗","19 toques en el enlace externo del perfil en 30 días. Con 183 visitas al perfil, el CTR del enlace es del 10,4% — muy por encima de la media.","info")}`,
 
@@ -487,9 +492,9 @@ const sectionContent = {
         </div>
       </div>
     </div>
-    ${insight("🤯","6.600 vistas con solo 6 seguidores. El ratio views/follower es de 1.100x — el algoritmo de TikTok está distribuyendo el contenido masivamente sin necesidad de base de seguidores.")}
-    ${insight("📈","+453,8% de me gusta en 28 días — el engagement está creciendo mucho más rápido que las vistas. La audiencia que ve el contenido está respondiendo positivamente.","info")}
-    ${insight("⚡","TikTok es la plataforma con mayor potencial de crecimiento viral. Con la misma estrategia de Shorts de YouTube adaptada a TikTok, el crecimiento podría ser exponencial.","info")}`,
+    ${insight("🤯","42.700 vistas acumuladas con 75 seguidores. El ratio views/follower es de 570x — el algoritmo de TikTok distribuye el contenido masivamente: 93,7% de las vistas vienen del 'Para ti'.")}
+    ${insight("📈","+453,8% de me gusta en 28 días — el engagement crece más rápido que las vistas. La audiencia que ve el contenido está respondiendo positivamente.","info")}
+    ${insight("⚡","42.700 vistas acumuladas desde mayo 2026 con 75 seguidores. TikTok es la plataforma con mayor potencial viral — con la estrategia de Shorts de YouTube adaptada al formato.","info")}`,
 
   "Audiencia": `
     <div class="section-header" style="background:linear-gradient(135deg,#0d1f4e,#1a3a6b)">
