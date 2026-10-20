@@ -116,7 +116,7 @@
       <div class="header-label">+QuePíldoras</div>
       <div class="header-title">Informe de Métricas · Octubre 2026</div>
     </div>
-    <span class="header-badge">7+ episodios · datos reales</span>
+    <span class="header-badge">9 episodios · EP09 mañana</span>
   </div>
   <nav class="nav" id="nav"></nav>
 </div>
@@ -171,7 +171,7 @@ const sectionContent = {
         <div>
           <div class="hero-label">+QuePíldoras</div>
           <div class="hero-title">Informe de métricas actualizado</div>
-          <div class="hero-sub">Datos reales · Octubre 2026 · 7 episodios publicados</div>
+          <div class="hero-sub">Datos reales · Octubre 2026 · 9 episodios publicados · EP09 mañana</div>
         </div>
         <span class="tag" style="background:rgba(126,200,227,0.2);color:#7ec8e3">100% orgánico · 0€ inversión</span>
       </div>
@@ -208,18 +208,22 @@ const sectionContent = {
     </div>
 
     <div class="card">
-      <div class="card-title">EPISODIOS PUBLICADOS</div>
+      <div class="card-title">EPISODIOS PUBLICADOS (9 publicados · EP09 mañana)</div>
       ${[
-        {num:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"5 may 2026",dur:"7:26",yt:"227 views · 30,8% ret.",sp:"104 escuchas",li:"2.775 imp. · 9,5% eng.",isNew:false},
-        {num:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades que necesitas",date:"20 may 2026",dur:"25:36",yt:"249 views · 17,5% ret.",sp:"64 escuchas",li:"441 imp. · 10,2% eng.",isNew:false},
-        {num:"EP02",title:"De salvar vidas en minutos a Medical Affairs (Fernando Zaragozá)",date:"3 jun 2026",dur:"30:07",yt:"—",sp:"—",li:"—",isNew:false},
-        {num:"EP03",title:"¿Me arrepiento? De médico a trabajar en pharma",date:"9 sept 2026",dur:"5:28",yt:"281 views · 20,9% ret.",sp:"—",li:"—",isNew:false},
-        {num:"EP04",title:"Ex-directivo pharma: el error que cometen los grandes líderes",date:"23 sept 2026",dur:"10:55",yt:"252 views · 18,4% ret.",sp:"—",li:"—",isNew:false},
-        {num:"EP05",title:"Del doctorado al departamento médico: así se sale del laboratorio",date:"7 oct 2026",dur:"—",yt:"42 views (reciente)",sp:"79 escuchas",li:"—",isNew:true},
-      ].map(ep=>`<div class="ep-card ${ep.isNew?'new':'normal'}">
+        {num:"EP00",title:"¿Qué hay detrás de la industria farmacéutica?",date:"6 may 2026",dur:"7:27",yt:"370 views",sp:"104 escuchas",li:"dato real",isNew:false,isNext:false},
+        {num:"EP01",title:"¿Quieres ser MSL? Estas son las habilidades que necesitas",date:"20 may 2026",dur:"25:37",yt:"373 views",sp:"64 escuchas",li:"441 imp.",isNew:false,isNext:false},
+        {num:"EP02",title:"De salvar vidas en minutos a Medical Affairs · Fernando Zaragoza",date:"3 jun 2026",dur:"30:08",yt:"224 views",sp:"30 escuchas",li:"—",isNew:false,isNext:false},
+        {num:"EP03",title:"¿Quién toma realmente las decisiones en la industria? · Laura Barreiro",date:"17 jun 2026",dur:"24:49",yt:"147 views",sp:"—",li:"—",isNew:false,isNext:false},
+        {num:"EP04",title:"20 años en Medical Affairs: la verdad que nadie te cuenta · Cristina González",date:"1 jul 2026",dur:"27:20",yt:"250 views",sp:"—",li:"—",isNew:false,isNext:false},
+        {num:"EP05",title:"¿Cómo llegan los medicamentos a distintos países? · Germán Domecq",date:"13 jul 2026",dur:"23:10",yt:"113 views",sp:"—",li:"—",isNew:false,isNext:false},
+        {num:"EP06",title:"¿Me arrepiento? De médico a trabajar en pharma · Marta Rodríguez",date:"9 sept 2026",dur:"26:09",yt:"571 views",sp:"—",li:"—",isNew:false,isNext:false},
+        {num:"EP07",title:"Ex-directivo pharma: el error que cometen los grandes líderes · Jaime Aguirre",date:"23 sept 2026",dur:"59:21",yt:"257 views",sp:"—",li:"—",isNew:false,isNext:false},
+        {num:"EP08",title:"Del doctorado al departamento médico: así se sale del laboratorio",date:"7 oct 2026",dur:"42:36",yt:"255 views",sp:"79 escuchas",li:"—",isNew:false,isNext:false},
+        {num:"EP09",title:"¿Necesitas un MÁSTER para entrar en pharma?",date:"21 oct 2026",dur:"—",yt:"Se estrena mañana",sp:"—",li:"—",isNew:false,isNext:true},
+      ].map(ep=>`<div class="ep-card ${ep.isNext?'':'normal'}" style="${ep.isNext?'background:#fff8e6;border:1px solid #d4a017':''}">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
-          <span class="tag" style="background:${ep.isNew?'rgba(14,110,85,0.15)':'rgba(13,31,78,0.1)'};color:${ep.isNew?C.green:C.navy}">${ep.num}</span>
-          ${ep.isNew?`<span class="tag" style="background:rgba(14,110,85,0.15);color:#0e6e55">🆕 PUBLICADO HOY</span>`:''}
+          <span class="tag" style="background:${ep.isNext?'rgba(212,160,23,0.15)':'rgba(13,31,78,0.1)'};color:${ep.isNext?'#d4a017':C.navy}">${ep.num}</span>
+          ${ep.isNext?`<span class="tag" style="background:rgba(212,160,23,0.15);color:#d4a017">🔜 ESTRENO MAÑANA</span>`:''}
           <span style="font-size:12px;color:${C.muted}">${ep.date} · ${ep.dur}</span>
         </div>
         <div style="font-weight:600;font-size:14px;margin-bottom:10px">${ep.title}</div>
@@ -233,10 +237,10 @@ const sectionContent = {
 
     <div>
       <div style="font-size:13px;font-weight:700;color:${C.navy};margin-bottom:12px">INSIGHTS CLAVE</div>
-      ${insight("📺","EP05 publicado el 7 oct — ya suma 79 escuchas en Spotify y 42 vistas en YouTube. En total llevamos 7 episodios y el canal sigue creciendo 100% orgánico.")}
-      ${insight("📊","7.371 vistas en YouTube · 302 escuchas en Spotify · 2,1K vistas TikTok (7 días). Crecimiento sostenido en todas las plataformas.")}
+      ${insight("🎙️","9 episodios publicados desde mayo 2026, con EP09 (¿Necesitas un MÁSTER?) estreno mañana 21 oct. El canal lleva +5 meses publicando contenido 100% orgánico.")}
+      ${insight("📺","EP06 (¿Me arrepiento?) es el episodio más visto con 571 vistas — 2x más que el siguiente. El formato de testimonios personales es el que más conecta.")}
+      ${insight("📊","7.371 vistas en YouTube (28 días) · 302 escuchas en Spotify (30 días) · 42.7K vistas TikTok acumuladas. Crecimiento sostenido en todas las plataformas.")}
       ${insight("🔵","LinkedIn: 582 seguidores (+58 en 30 días). De 309 a 582 en 4 meses — casi el doble de seguidores desde el lanzamiento.","info")}
-      ${insight("⚫","TikTok: 75 seguidores (era 6 en junio). El contenido sigue siendo distribuido masivamente por el algoritmo.","info")}
     </div>`,
 
   "Totales": `
@@ -266,7 +270,7 @@ const sectionContent = {
       <div class="stats-grid">
         ${stat("~19.3K","Vistas totales (Shorts + episodios)",{sub:"Suma de todos los vídeos publicados"})}
         ${stat("105","Suscriptores totales",{up:"+14 en los últimos 28 días"})}
-        ${stat("9","Episodios largos publicados",{sub:"~2.541 vistas entre todos"})}
+        ${stat("9","Episodios largos publicados",{sub:"2.560 vistas entre todos (EP00-EP08)"})}
         ${stat("20+","Shorts publicados",{sub:"~16.756 vistas en total"})}
       </div>
       ${insight("📺","El canal tiene ~19.300 vistas acumuladas desde mayo 2026. Los Shorts representan el ~87% del total de vistas, siendo el principal motor de descubrimiento.")}
@@ -344,16 +348,21 @@ const sectionContent = {
     <div class="card">
       <div class="card-title">Vídeos largos (28 días)</div>
       <div style="background:#f0f4ff;border-radius:10px;padding:14px">
-        ${barRow("EP03 · ¿Me arrepiento? De médico a trabajar en pharma (5:28)",100,"281 vistas · 20,9% ret.","#1a3a6b")}
-        ${barRow("EP04 · Ex-directivo pharma: el error de los grandes líderes (10:55)",90,"252 vistas · 18,4% ret.","#1a3a6b")}
-        ${barRow("EP01 · ¿Quieres ser MSL? (25:36)",89,"249 vistas · 17,5% ret.","#1a3a6b")}
-        ${barRow("EP00 · ¿Qué hay detrás? (7:26)",81,"227 vistas · 30,8% ret.","#1a3a6b")}
-        ${barRow("EP05 · Del doctorado al Dpto. Médico",15,"42 vistas (muy reciente)","#0e6e55")}
+        ${barRow("EP06 · ¿Me arrepiento? De médico a pharma (26:09)",100,"571 vistas","#1a3a6b")}
+        ${barRow("EP01 · ¿Quieres ser MSL? (25:37)",65,"373 vistas","#1a3a6b")}
+        ${barRow("EP00 · ¿Qué hay detrás? (7:27)",65,"370 vistas","#1a3a6b")}
+        ${barRow("EP07 · Ex-directivo pharma (59:21)",45,"257 vistas","#1a3a6b")}
+        ${barRow("EP08 · Del doctorado al Dpto. Médico (42:36)",45,"255 vistas · reciente","#0e6e55")}
+        ${barRow("EP04 · 20 años en Medical Affairs (27:20)",44,"250 vistas","#1a3a6b")}
+        ${barRow("EP02 · De salvar vidas a Medical Affairs (30:08)",39,"224 vistas","#1a3a6b")}
+        ${barRow("EP03 · ¿Quién toma las decisiones? (24:49)",26,"147 vistas","#1a3a6b")}
+        ${barRow("EP05 · ¿Cómo llegan los medicamentos? (23:10)",20,"113 vistas","#1a3a6b")}
+        <p style="font-size:11px;color:${C.muted};margin-top:10px;font-style:italic">Vistas acumuladas desde publicación · 9 episodios</p>
       </div>
     </div>
     ${insight("🏆","Retención top: 'Errores de CV' logra 60,8% y 'Llegar a lo más alto' 57,0% — ambos muy por encima del benchmark de Shorts B2B (38-50%).")}
     ${insight("🎬","7 Shorts en el top 28 días. Los temas de carrera profesional (CV, PhD, MSL) superan con claridad al contenido de branding.","info")}
-    ${insight("📺","EP03 lidera en episodios largos con 281 vistas. El formato de 5 minutos engancha mejor que los episodios más largos (20-30 min).","info")}
+    ${insight("📺","EP06 (¿Me arrepiento?) lidera con 571 vistas — testimonios personales de médicos que cambian a pharma son el formato más impactante.","info")}
     ${insight("⚠️","117,6h de tiempo de visualización (+205%): el canal está madurando y la audiencia consume más contenido por sesión.","warning")}`,
 
   "Spotify": `
@@ -363,7 +372,7 @@ const sectionContent = {
       ${stat("302","Escuchas en Spotify (30 días)",{up:"+205% tiempo de consumo",big:true})}
       ${stat("74h 32min","Horas de reproducción (30 días)",{up:"+264,5% vs periodo anterior"})}
       ${stat("138","Seguidores totales",{up:"+58 últimos 30 días"})}
-      ${stat("1.167","Total escuchas acumuladas",{sub:"EP00 al EP05"})}
+      ${stat("1.167","Total escuchas acumuladas",{sub:"EP00 al EP08 · 9 episodios"})}
     </div>
     <div class="card">
       <div class="card-title">Clasificación de episodios · Reproducciones</div>
